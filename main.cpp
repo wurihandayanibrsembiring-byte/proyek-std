@@ -63,3 +63,21 @@ void bacaDariFile() {
     file.close();
     cout << "=> Berhasil membaca " << dataUtama.size() << " data dari file.\n";
 }
+
+void menuInput() {
+    int pil;
+    cout << "\n=== MENU 1: INPUT DATA ===\n";
+    cout << "1. Input Manual\n";
+    cout << "2. Generate Acak\n";
+    cout << "3. Baca dari File Teks (.txt)\n";
+    cout << "Pilih metode (1-3): ";
+    cin >> pil;
+    
+    if (pil == 1) inputManual();
+    else if (pil == 2) generateAcak();
+    else if (pil == 3) bacaDariFile();
+    else cout << "Pilihan salah!\n";
+}
+
+
+
