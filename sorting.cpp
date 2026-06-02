@@ -24,3 +24,11 @@ void shellSortCore(vector<int>& arr, int& comparisons, int& swaps, bool verbose)
                     break;
                 }
             }
+            arr[j] = temp;
+            if (verbose && n <= 20) {
+                cout << "   Kondisi array: ";
+                cetakArray(arr);
+            }
+        }
+    }
+}
