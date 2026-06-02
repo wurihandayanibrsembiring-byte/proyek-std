@@ -24,3 +24,8 @@ int jumpSearchCore(const vector<int>& arr, int target, int& steps) {
         prev++;
         if (prev == min(step, n)) return -1;
     }
+
+  steps++;
+    if (arr[prev] == target) return prev;
+    return -1;
+}
