@@ -32,3 +32,19 @@ void shellSortCore(vector<int>& arr, int& comparisons, int& swaps, bool verbose)
         }
     }
 }
+
+void bubbleSortCore(vector<int>& arr, int& comparisons, int& swaps) {
+    int n = arr.size();
+    comparisons = 0; swaps = 0;
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            comparisons++;
+            if (arr[j] > arr[j + 1]) {
+                int temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+                swaps++;
+            }
+        }
+    }
+}
