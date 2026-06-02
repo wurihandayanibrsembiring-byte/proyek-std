@@ -17,3 +17,10 @@ int jumpSearchCore(const vector<int>& arr, int target, int& steps) {
         step += sqrt(n);
         if (prev >= n) return -1;
     }
+
+ cout << "Target berada di kisaran indeks " << prev << " sampai " << min(step, n) - 1 << ". Mulai pencarian linear...\n";
+    while (arr[prev] < target) {
+        steps++;
+        prev++;
+        if (prev == min(step, n)) return -1;
+    }
