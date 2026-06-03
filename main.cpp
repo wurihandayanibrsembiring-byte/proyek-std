@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <string>
 #include <cmath>
 #include <chrono>   // Library wajib untuk menghitung waktu eksekusi (milidetik)
 #include <fstream>  // Library wajib untuk membaca dan menulis file luar (.txt & .csv)
@@ -14,6 +15,7 @@ using namespace std;
 // Variabel Global untuk menyimpan data di memori program
 vector<int> dataUtama;   // Tempat menyimpan data mentah awal
 vector<int> dataTerurut; // Tempat menyimpan data hasil urutan Shell Sort
+vector<string> dataString; // Data khusus demonstrasi string
 
 // Menu 1 - Opsi 1: Mengetik angka ID satu per satu secara manual
 void inputManual() {
@@ -75,7 +77,7 @@ void menuInput() {
     int pil;
     cout << "\n=== MENU 1: INPUT DATA LOG SERVER ===\n";
     cout << "1. Input Manual ID Pegawai\n";
-    cout << "2. Generate Otomatis Data Skala Besar (Sesuai Syarat Dosen >1000 Data)\n";
+    cout << "2. Generate Otomatis Data Skala Besar (>1000 Data)\n";
     cout << "3. Baca dari File Teks (.txt)\n";
     cout << "Pilih metode (1-3): ";
     cin >> pil;
@@ -84,6 +86,34 @@ void menuInput() {
     else if (pil == 2) generateAcak();
     else if (pil == 3) bacaDariFile();
     else cout << "Pilihan salah!\n";
+}
+
+// ======================================================
+// MENAMPILKAN 10 DATA PERTAMA DAN TERAKHIR
+// UNTUK DATA BESAR (>20 ELEMEN)
+// ======================================================
+
+void tampilkanRingkasan(const vector<int>& arr)
+{
+    int n = arr.size();
+
+    cout << "\n10 Data Pertama:\n";
+
+    for(int i = 0; i < 10 && i < n; i++)
+    {
+        cout << arr[i] << " ";
+    }
+
+    cout << "\n\n10 Data Terakhir:\n";
+
+    int mulai = max(0, n - 10);
+
+    for(int i = mulai; i < n; i++)
+    {
+        cout << arr[i] << " ";
+    }
+
+    cout << "\n";
 }
 
 // Menu 2: Menjalankan Fungsi Pengurutan Shell Sort
@@ -112,9 +142,12 @@ void menuSorting() {
     chrono::duration<double, milli> elapsed = end - start; // Hitung selisih waktu (Durasi)
     
     if (dataTerurut.size() <= 20) {
-        cout << "\nData ID Setelah diurutkan (Rapi):\n";
-        cetakArray(dataTerurut);
-    }
+    cout << "\nData ID Setelah diurutkan (Rapi):\n";
+    cetakArray(dataTerurut);
+	}
+	else {
+    tampilkanRingkasan(dataTerurut);
+	}
     cout << "------------------------------------------------------\n";
     cout << "Hasil Analisis Performa Shell Sort:\n";
     cout << "Waktu Eksekusi                   : " << elapsed.count() << " milidetik\n";
@@ -151,60 +184,255 @@ void menuSearching() {
     cout << "Jumlah Langkah Lompatan : " << steps << " kali iterasi\n";
 }
 
-// Menu 4: Menguji Skala Besar & Mengekspor Hasil Eksperimen Studi Kasus ke File CSV
-void menuBenchmark() {
-    int ukuranData[] = {100, 500, 1000, 2000}; // Ukuran dataset pengujian sesuai instruksi
-    int nUkuran = sizeof(ukuranData) / sizeof(ukuranData[0]);
-    
-    // Menyiapkan teks judul tabel untuk isi file Microsoft Excel (.csv) nanti
-    string csvContent = "Ukuran Data,Waktu Shell (ms),Comp Shell,Swap Shell,Waktu Bubble (ms),Comp Bubble,Swap Bubble\n";
-    
-    cout << "\n=== MENU 4: BENCHMARK STUDI KASUS (DATA REALISTIS 100 - 2000 DATA) ===\n";
-    cout << "Menguji efisiensi Shell Sort vs Bubble Sort berdasarkan jumlah baris data...\n";
-    cout << "-----------------------------------------------------------------------------------------\n";
-    cout << "N Data\t| Shell (ms)\t| Comp Shell\t| Bubble (ms)\t| Comp Bubble\n";
-    cout << "-----------------------------------------------------------------------------------------\n";
-    
-    // Perulangan untuk menguji data skala 100 sampai 2000 satu per satu
-    for (int i = 0; i < nUkuran; i++) {
-        int n = ukuranData[i];
-        vector<int> dataUjiShell, dataUjiBubble;
-        
-        // Membuat data tiruan dalam jumlah besar secara otomatis
-        for (int j = 0; j < n; j++) {
-            int val = rand() % 10000;
-            dataUjiShell.push_back(val);
-            dataUjiBubble.push_back(val);
-        }
-        
-        int compShell, swapShell, compBubble, swapBubble;
-        
-        // 1. Menguji Kecepatan Shell Sort
-        auto s1 = chrono::high_resolution_clock::now();
-        shellSortCore(dataUjiShell, compShell, swapShell, false);
-        auto e1 = chrono::high_resolution_clock::now();
-        chrono::duration<double, milli> tShell = e1 - s1;
-        
-        // 2. Menguji Kecepatan Bubble Sort (Sebagai Pemandig Performa)
-        auto s2 = chrono::high_resolution_clock::now();
-        bubbleSortCore(dataUjiBubble, compBubble, swapBubble);
-        auto e2 = chrono::high_resolution_clock::now();
-        chrono::duration<double, milli> tBubble = e2 - s2;
-        
-        // Cetak hasil perbandingan ke layar monitor
-        cout << n << "\t| " << tShell.count() << "\t| " << compShell << "\t\t| " << tBubble.count() << "\t| " << compBubble << "\n";
-        
-        // Menyimpan angka baris data hasil uji coba ke dalam variabel string Excel
-        csvContent += to_string(n) + "," + to_string(tShell.count()) + "," + to_string(compShell) + "," + to_string(swapShell) + "," +
-                      to_string(tBubble.count()) + "," + to_string(compBubble) + "," + to_string(swapBubble) + "\n";
+// ======================================================
+// MEMBUAT DATA ACAK
+// ======================================================
+
+vector<int> generateRandomData(int n)
+{
+    vector<int> data;
+
+    for(int i=0;i<n;i++)
+    {
+        data.push_back(rand()%10000);
     }
-    cout << "-----------------------------------------------------------------------------------------\n";
-    
-    // TAHAP EKSPOR: Membuat dan menyimpan data angka di atas menjadi file nyata 'hasil_perbandingan.csv'
-    ofstream fileKeluar("hasil_perbandingan.csv");
-    fileKeluar << csvContent;
-    fileKeluar.close(); // Tutup file setelah sukses ditulis
-    cout << "=> BERHASIL: Hasil pengujian skala besar otomatis disimpan ke 'hasil_perbandingan.csv' untuk grafik laporan!\n";
+
+    return data;
+}
+
+// ======================================================
+// MEMBUAT DATA SUDAH TERURUT
+// ======================================================
+
+vector<int> generateSortedData(int n)
+{
+    vector<int> data;
+
+    for(int i=0;i<n;i++)
+    {
+        data.push_back(i);
+    }
+
+    return data;
+}
+
+// ======================================================
+// MEMBUAT DATA TERBALIK
+// ======================================================
+
+vector<int> generateReverseData(int n)
+{
+    vector<int> data;
+
+    for(int i=n;i>0;i--)
+    {
+        data.push_back(i);
+    }
+
+    return data;
+}
+
+// ======================================================
+// MEMBUAT DATA BANYAK DUPLIKAT
+// ======================================================
+
+vector<int> generateDuplicateData(int n)
+{
+    vector<int> data;
+
+    for(int i=0;i<n;i++)
+    {
+        data.push_back(rand()%10);
+    }
+
+    return data;
+}
+
+// ======================================================
+// SHELL SORT UNTUK STRING
+// ======================================================
+
+void shellSortString(vector<string>& arr)
+{
+    int n = arr.size();
+
+    for(int gap = n/2; gap > 0; gap /= 2)
+    {
+        for(int i = gap; i < n; i++)
+        {
+            string temp = arr[i];
+            int j;
+
+            for(j = i; j >= gap && arr[j-gap] > temp; j -= gap)
+            {
+                arr[j] = arr[j-gap];
+            }
+
+            arr[j] = temp;
+        }
+    }
+}
+
+// ======================================================
+// DEMO STRING
+// ======================================================
+
+void menuString()
+{
+    vector<string> nama =
+    {
+        "Wuri Handayani",
+        "Fiona Hutagalung",
+        "Meliana Manullang",
+        "Putri Aritonang"
+    };
+
+    cout << "\n=== DEMO SHELL SORT STRING ===\n";
+
+    cout << "\nData Sebelum Diurutkan:\n";
+
+    for(string s : nama)
+    {
+    cout << s << endl;
+    }
+
+    cout << endl;
+
+    shellSortString(nama);
+
+    cout << "\nData Setelah Diurutkan:\n";
+
+    for(string s : nama)
+    {
+    cout << s << endl;
+    } 
+
+    cout << endl;
+}
+
+void menuBenchmark()
+{
+    // Ukuran data 
+    int ukuranData[] =
+    {
+        100,
+        500,
+        1000,
+        5000,
+        10000
+    };
+
+    int jumlahUkuran =
+        sizeof(ukuranData) /
+        sizeof(ukuranData[0]);
+
+    ofstream csv("hasil_perbandingan.csv");
+
+    csv << "Kondisi,N,Shell(ms),Knuth(ms),Bubble(ms)\n";
+
+    cout << "\n================================================\n";
+    cout << "BENCHMARK SHELL VS KNUTH VS BUBBLE\n";
+    cout << "================================================\n";
+
+    string kondisi[4] =
+    {
+        "Random",
+        "Sorted",
+        "Reverse",
+        "Duplicate"
+    };
+
+    for(int k=0;k<4;k++)
+    {
+        cout << "\n========================================\n";
+        cout << "KONDISI DATA : " << kondisi[k] << endl;
+        cout << "========================================\n";
+
+        for(int i=0;i<jumlahUkuran;i++)
+        {
+            int n = ukuranData[i];
+
+            vector<int> data;
+
+            if(k==0)
+                data = generateRandomData(n);
+
+            else if(k==1)
+                data = generateSortedData(n);
+
+            else if(k==2)
+                data = generateReverseData(n);
+
+            else
+                data = generateDuplicateData(n);
+
+            vector<int> shellData = data;
+            vector<int> knuthData = data;
+            vector<int> bubbleData = data;
+
+            int c1,s1,c2,s2,c3,s3;
+
+            auto start1 =
+            chrono::high_resolution_clock::now();
+
+            shellSortCore(shellData,c1,s1,false);
+
+            auto end1 =
+            chrono::high_resolution_clock::now();
+
+            auto start2 =
+            chrono::high_resolution_clock::now();
+
+            shellSortKnuth(knuthData,c2,s2,false);
+
+            auto end2 =
+            chrono::high_resolution_clock::now();
+
+            auto start3 =
+            chrono::high_resolution_clock::now();
+
+            bubbleSortCore(bubbleData,c3,s3);
+
+            auto end3 =
+            chrono::high_resolution_clock::now();
+
+            chrono::duration<double,milli>
+            tShell = end1-start1;
+
+            chrono::duration<double,milli>
+            tKnuth = end2-start2;
+
+            chrono::duration<double,milli>
+            tBubble = end3-start3;
+
+            cout
+            << "N = "
+            << n
+            << " | Shell = "
+            << tShell.count()
+            << " ms | Knuth = "
+            << tKnuth.count()
+            << " ms | Bubble = "
+            << tBubble.count()
+            << " ms\n";
+
+            csv
+            << kondisi[k]
+            << ","
+            << n
+            << ","
+            << tShell.count()
+            << ","
+            << tKnuth.count()
+            << ","
+            << tBubble.count()
+            << "\n";
+        }
+    }
+
+    csv.close();
+
+    cout << "\nCSV berhasil dibuat.\n";
 }
 
 // Fungsi utama pengendali alur aplikasi (Fungsi yang pertama kali dijalankan komputer)
@@ -220,9 +448,10 @@ int main() {
         cout << "2. Jalankan Shell Sort (Urutkan ID + Trace Langkah)\n";
         cout << "3. Jalankan Jump Search (Cari Posisi ID Pegawai)\n";
         cout << "4. Jalankan Eksperimen Benchmark Skala Besar (>1000 Data)\n";
+        cout << "5. Demo Shell Sort String\n";
         cout << "0. Keluar Aplikasi\n";
         cout << "--------------------------------------------------\n";
-        cout << "Pilih Aktivitas (0-4): ";
+        cout << "Pilih Aktivitas (0-5): ";
         cin >> pilihan;
         
         // Sistem Switch Case untuk mengarahkan pengguna sesuai nomor tombol menu yang dipilih
@@ -231,6 +460,7 @@ int main() {
             case 2: menuSorting(); break;   // Jika ketik 2, lompat ke fungsi menuSorting
             case 3: menuSearching(); break; // Jika ketik 3, lompat ke fungsi menuSearching
             case 4: menuBenchmark(); break; // Jika ketik 4, lompat ke fungsi menuBenchmark
+            case 5: menuString(); break;    // Jika ketik 5, Lompat ke fungsi menuString
             case 0: cout << "Sistem dimatikan. Terima kasih!\n"; break;
             default: cout << "Menu tidak tersedia. Coba lagi.\n";
         }
