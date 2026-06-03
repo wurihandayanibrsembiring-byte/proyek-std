@@ -1,7 +1,7 @@
 ======================================================
 CARA MENJALANKAN PROGRAM (COMPILE & RUN)
 ======================================================
-
+ 
 1. Pastikan file 'main.cpp', 'sorting.cpp', dan 'searching.cpp' berada di dalam satu folder 'source_code' yang sama.
 2. Buka file 'main.cpp' menggunakan aplikasi Dev-C++ (atau IDE sejenisnya).
 3. Tekan tombol F11 (Compile & Run) pada keyboard Anda.
